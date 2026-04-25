@@ -4,7 +4,7 @@ import { ArrowLeft, Send, Mail, CheckCircle, AlertCircle } from 'lucide-react';
 import { contactPage, seo, brand } from '../content/siteCopy';
 import usePageMeta from '../hooks/usePageMeta';
 
-const WEB3FORMS_KEY = '4bbf0918-02a4-4a3f-ae48-5e440dfcb8cf';
+const WEB3FORMS_KEY = 'd51746b1-2034-4916-bde3-757024810fa9';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
