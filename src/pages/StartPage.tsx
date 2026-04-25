@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { startPage, seo, brand } from '../content/siteCopy';
 import usePageMeta from '../hooks/usePageMeta';
-import { supabase } from '../lib/supabase';
+
+const WEB3FORMS_KEY = '4bbf0918-02a4-4a3f-ae48-5e440dfcb8cf';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -25,25 +26,37 @@ export default function StartPage() {
     e.preventDefault();
     setStatus('submitting');
 
-    const { error } = await supabase.from('client_requests').insert({
-      full_name: fullName.trim(),
-      email: email.trim(),
-      business_name: businessName.trim(),
-      request: request.trim(),
-      links: links.trim(),
-    });
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New client request from ${fullName.trim()}`,
+          name: fullName.trim(),
+          email: email.trim(),
+          business_name: businessName.trim(),
+          request: request.trim(),
+          links: links.trim(),
+        }),
+      });
 
-    if (error) {
+      const data = await response.json();
+
+      if (!data.success) {
+        setStatus('error');
+        return;
+      }
+
+      setStatus('success');
+      setFullName('');
+      setEmail('');
+      setBusinessName('');
+      setRequest('');
+      setLinks('');
+    } catch {
       setStatus('error');
-      return;
     }
-
-    setStatus('success');
-    setFullName('');
-    setEmail('');
-    setBusinessName('');
-    setRequest('');
-    setLinks('');
   }
 
   const inputClass =

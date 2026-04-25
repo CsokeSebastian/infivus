@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Send, Mail, CheckCircle, AlertCircle } from 'lucide-react';
 import { contactPage, seo, brand } from '../content/siteCopy';
 import usePageMeta from '../hooks/usePageMeta';
-import { supabase } from '../lib/supabase';
+
+const WEB3FORMS_KEY = '4bbf0918-02a4-4a3f-ae48-5e440dfcb8cf';
 
 type Status = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -23,19 +24,33 @@ export default function ContactPage() {
     e.preventDefault();
     setStatus('submitting');
 
-    const { error } = await supabase
-      .from('contact_submissions')
-      .insert({ name: name.trim(), email: email.trim(), message: message.trim() });
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `New contact message from ${name.trim()}`,
+          name: name.trim(),
+          email: email.trim(),
+          message: message.trim(),
+        }),
+      });
 
-    if (error) {
+      const data = await response.json();
+
+      if (!data.success) {
+        setStatus('error');
+        return;
+      }
+
+      setStatus('success');
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch {
       setStatus('error');
-      return;
     }
-
-    setStatus('success');
-    setName('');
-    setEmail('');
-    setMessage('');
   }
 
   const inputClass =
