@@ -1,0 +1,157 @@
+import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Send, Mail, CheckCircle, AlertCircle } from 'lucide-react';
+import { contactPage, seo, brand } from '../content/siteCopy';
+import usePageMeta from '../hooks/usePageMeta';
+import { supabase } from '../lib/supabase';
+
+type Status = 'idle' | 'submitting' | 'success' | 'error';
+
+export default function ContactPage() {
+  usePageMeta({
+    title: seo.contact.title,
+    description: seo.contact.description,
+    canonical: `${brand.url}/contact`,
+  });
+
+  const [status, setStatus] = useState<Status>('idle');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setStatus('submitting');
+
+    const { error } = await supabase
+      .from('contact_submissions')
+      .insert({ name: name.trim(), email: email.trim(), message: message.trim() });
+
+    if (error) {
+      setStatus('error');
+      return;
+    }
+
+    setStatus('success');
+    setName('');
+    setEmail('');
+    setMessage('');
+  }
+
+  const inputClass =
+    'w-full bg-surface-900/60 border border-surface-800/60 rounded-xl px-4 py-3 text-white placeholder-surface-600 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200';
+
+  return (
+    <main className="section-padding pt-28 lg:pt-36 pb-20">
+      <div className="section-container max-w-2xl">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-sm text-surface-500 hover:text-white transition-colors duration-200 mb-8"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to home
+        </Link>
+
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+          {contactPage.title}
+        </h1>
+        <p className="mt-4 text-surface-400 leading-relaxed max-w-lg">
+          {contactPage.subheading}
+        </p>
+
+        <div className="mt-4 flex items-center gap-2 text-sm text-surface-500">
+          <Mail className="w-4 h-4" />
+          <a
+            href={`mailto:${contactPage.email}`}
+            className="hover:text-brand-400 transition-colors duration-200"
+          >
+            {contactPage.email}
+          </a>
+        </div>
+
+        {status === 'success' ? (
+          <div className="mt-12 glass-card p-8 text-center">
+            <div className="w-12 h-12 rounded-full bg-brand-500/10 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-5 h-5 text-brand-400" />
+            </div>
+            <h2 className="text-xl font-semibold text-white">
+              Message sent successfully
+            </h2>
+            <p className="mt-2 text-sm text-surface-400">
+              We'll get back to you shortly.
+            </p>
+            <button
+              onClick={() => setStatus('idle')}
+              className="mt-6 text-sm text-brand-400 hover:text-brand-300 transition-colors duration-200"
+            >
+              Send another message
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="mt-12 space-y-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-surface-300 mb-2">
+                Name
+              </label>
+              <input
+                id="name"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-surface-300 mb-2">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-surface-300 mb-2">
+                Message
+              </label>
+              <textarea
+                id="message"
+                required
+                rows={5}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Tell us what you need..."
+                className={`${inputClass} resize-none`}
+              />
+            </div>
+
+            {status === 'error' && (
+              <div className="flex items-center gap-2 text-sm text-red-400">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                Something went wrong. Please try again.
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={status === 'submitting'}
+              className="btn-primary gap-2 w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {status === 'submitting' ? 'Sending...' : contactPage.submitLabel}
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
+        )}
+      </div>
+    </main>
+  );
+}
