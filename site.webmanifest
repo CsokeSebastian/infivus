@@ -1,0 +1,16 @@
+{
+  "name": "Infivus — Unlimited Creative Subscription",
+  "short_name": "Infivus",
+  "description": "Unlimited design, copywriting, and ad creatives on a flat monthly subscription. Delivered in 48 hours.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f4f0",
+  "theme_color": "#c9a84c",
+  "lang": "de",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity"],
+  "icons": [
+    { "src": "favicon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "favicon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
