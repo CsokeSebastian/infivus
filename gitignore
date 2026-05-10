@@ -1,0 +1,14 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Vercel local
+.vercel/
+
+# Node (if ever needed for local scripts)
+node_modules/
