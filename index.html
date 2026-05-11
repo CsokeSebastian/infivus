@@ -160,16 +160,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .form-submit:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
 /* ── HERO — split layout: text left, vertical scroll right ── */
-.hero{
-  min-height:auto;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  padding-top:80px;
+.hero-wrap{
+  background:var(--grad-hero);
   position:relative;
   overflow:hidden;
-  background:var(--grad-hero);
 }
-.hero::before{
+.hero-wrap::before{
   content:'';position:absolute;inset:0;
   background:
     radial-gradient(ellipse 60% 80% at 20% 50%,rgba(201,168,76,0.1) 0%,transparent 65%),
@@ -177,16 +173,27 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
     radial-gradient(ellipse 40% 40% at 60% 80%,rgba(74,184,168,0.05) 0%,transparent 60%);
   pointer-events:none;z-index:0;
 }
-.hero::after{
+.hero-wrap::after{
   content:'';position:absolute;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   background-size:256px 256px;pointer-events:none;opacity:.25;z-index:0;
+}
+.hero{
+  min-height:auto;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  padding-top:80px;
+  position:relative;
+  max-width:1160px;
+  margin:0 auto;
+  padding-left:3rem;
+  padding-right:3rem;
 }
 
 /* LEFT — text content */
 .hero-left{
   display:flex;flex-direction:column;justify-content:center;
-  padding:4rem 4rem 0 4rem;
+  padding:4rem 2rem 0 0;
   position:relative;z-index:2;
 }
 .hero-badge{
@@ -499,8 +506,8 @@ footer{background:#e8e6e0;padding:4rem 3rem 2rem;border-top:1px solid rgba(0,0,0
   nav{padding:1.25rem 1.5rem}
   .nav-links{display:none}
   section,.inner-page{padding:6.25rem 1.5rem}
-  .hero{grid-template-columns:1fr;min-height:auto}
-  .hero-left{padding:5rem 1.5rem 3rem}
+  .hero{grid-template-columns:1fr;min-height:auto;padding-left:1.5rem;padding-right:1.5rem}
+  .hero-left{padding:3rem 0 0 0}
   .hero-gallery{height:50vw;max-height:400px}
   .hero-headline{font-size:clamp(2.4rem,7vw,3.6rem)}
   .numbers-grid{grid-template-columns:1fr 1fr}
@@ -631,6 +638,7 @@ window._gads_gtag = gads_gtag;
 <div id="page-home" class="page active">
 
 <!-- HERO -->
+<div class="hero-wrap">
 <section class="hero">
 
   <!-- LEFT: text content -->
@@ -682,6 +690,7 @@ window._gads_gtag = gads_gtag;
 
   <div class="hero-fade"></div>
 </section>
+</div><!-- /hero-wrap -->
 
 
 <!-- NUMBERS — how many brands we've helped -->
